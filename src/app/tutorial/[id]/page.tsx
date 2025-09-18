@@ -321,8 +321,9 @@ export default function TutorialPage() {
                     {children}
                   </blockquote>
                 ),
-                code: ({ inline, children }) => 
-                  inline ? (
+                code: ({ children, className }) => {
+                  const isInline = !className || !className.includes('language-');
+                  return isInline ? (
                     <code className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-base font-mono">
                       {children}
                     </code>
@@ -330,7 +331,8 @@ export default function TutorialPage() {
                     <code className="block bg-gray-900 text-gray-100 p-4 rounded-lg text-sm font-mono overflow-x-auto mb-6">
                       {children}
                     </code>
-                  ),
+                  );
+                },
                 pre: ({ children }) => (
                   <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-sm font-mono overflow-x-auto mb-6">
                     {children}

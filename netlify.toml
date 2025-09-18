@@ -4,12 +4,3 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-[build.environment]
-  NEXT_PRIVATE_TARGET = "server"
-
-# Redirect all requests to Next.js
-[[redirects]]
-  from = "/*"
-  to = "/.netlify/functions/nextjs"
-  status = 200
