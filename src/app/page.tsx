@@ -1,102 +1,167 @@
-import Image from "next/image";
+'use client';
+
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+
+interface Tutorial {
+  _id: string;
+  title: string;
+  description?: string;
+  author?: string;
+  category?: string;
+  difficulty?: string;
+  readTime?: number;
+  totalChapters?: number;
+  createdAt: string;
+}
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [tutorials, setTutorials] = useState<Tutorial[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    async function fetchTutorials() {
+      try {
+        const response = await fetch('/api/tutorials');
+        const data = await response.json();
+        
+        if (response.ok) {
+          setTutorials(data.tutorials);
+        } else {
+          setError(data.error || 'Failed to fetch tutorials');
+        }
+      } catch (err) {
+        setError('Network error');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchTutorials();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-gray-600">Loading tutorials...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-red-600">Error: {error}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-white">
+      <header className="border-b border-gray-200 bg-white">
+        <div className="max-w-4xl mx-auto px-6 py-8">
+          <h1 className="text-4xl font-normal text-gray-900 text-center mb-4">
+            Learn from First Principles
+          </h1>
+          <p className="text-lg text-gray-600 text-center max-w-2xl mx-auto leading-relaxed">
+            Every complex topic has simple fundamentals. We break them down step-by-step, so you build 
+            real understanding instead of memorizing facts.
+          </p>
         </div>
+      </header>
+
+      <main className="max-w-4xl mx-auto px-6 py-12">
+        {tutorials.length === 0 ? (
+          <div className="text-center py-16">
+            <h2 className="text-2xl font-normal text-gray-900 mb-4">No tutorials yet</h2>
+            <p className="text-gray-600">
+              Check back soon for new content, or contact the admin to add tutorials.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="mb-8">
+              <h2 className="text-2xl font-normal text-gray-900 mb-2">
+                What's New & What You Started
+              </h2>
+              <p className="text-gray-600">
+                Fresh tutorials to explore and pick up where you left off
+              </p>
+            </div>
+
+            <div className="space-y-6">
+              {tutorials.map((tutorial) => (
+                <article key={tutorial._id} className="border border-gray-200 rounded-lg p-6 hover:shadow-sm transition-shadow">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      {tutorial.category && (
+                        <span className="bg-amber-100 text-amber-800 text-sm px-3 py-1 rounded-full">
+                          {tutorial.category}
+                        </span>
+                      )}
+                      {tutorial.difficulty && (
+                        <span className="text-sm text-gray-600">
+                          {tutorial.difficulty}
+                        </span>
+                      )}
+                    </div>
+                    <time className="text-sm text-gray-500">
+                      {new Date(tutorial.createdAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </time>
+                  </div>
+
+                  <h3 className="text-xl font-medium text-gray-900 mb-3">
+                    <Link 
+                      href={`/tutorial/${tutorial._id}`}
+                      className="hover:text-amber-600 transition-colors"
+                    >
+                      {tutorial.title}
+                    </Link>
+                  </h3>
+
+                  {tutorial.description && (
+                    <p className="text-gray-600 mb-4 leading-relaxed">
+                      {tutorial.description}
+                    </p>
+                  )}
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4 text-sm text-gray-500">
+                      {tutorial.totalChapters && (
+                        <span>📚 {tutorial.totalChapters} chapters</span>
+                      )}
+                      {tutorial.readTime && (
+                        <span>⏱ {tutorial.readTime} min read</span>
+                      )}
+                      {tutorial.author && (
+                        <span>By {tutorial.author}</span>
+                      )}
+                    </div>
+                    <Link
+                      href={`/tutorial/${tutorial._id}`}
+                      className="text-amber-600 hover:text-amber-800 font-medium transition-colors"
+                    >
+                      Start Reading →
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </>
+        )}
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      <footer className="border-t border-gray-200 mt-16">
+        <div className="max-w-4xl mx-auto px-6 py-8 text-center">
+          <p className="text-gray-600">
+            Built for collaborative learning through first principles thinking
+          </p>
+        </div>
       </footer>
     </div>
   );
