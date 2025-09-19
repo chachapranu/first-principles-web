@@ -45,7 +45,7 @@ export default function TutorialPage() {
         } else {
           setError(data.error || 'Failed to fetch tutorial');
         }
-      } catch (err) {
+      } catch {
         setError('Network error');
       } finally {
         setLoading(false);
@@ -150,7 +150,7 @@ export default function TutorialPage() {
           </div>
 
           <div className="space-y-4">
-            {tutorial.chapters!.sort((a, b) => a.order - b.order).map((chapter, index) => (
+            {tutorial.chapters!.sort((a, b) => a.order - b.order).map((chapter) => (
               <Link
                 key={chapter.order}
                 href={`/tutorial/${tutorial._id}/chapter/${chapter.order}`}

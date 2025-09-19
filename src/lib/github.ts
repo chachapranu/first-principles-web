@@ -106,7 +106,13 @@ export function parseGitHubUrl(url: string): { owner: string; repo: string; bran
   throw new Error('Invalid GitHub tree URL format');
 }
 
-async function fetchDirectoryContents(apiUrl: string): Promise<any[]> {
+interface GitHubApiItem {
+  name: string;
+  type: 'file' | 'dir';
+  download_url?: string;
+}
+
+async function fetchDirectoryContents(apiUrl: string): Promise<GitHubApiItem[]> {
   const response = await fetch(apiUrl);
   
   if (!response.ok) {
@@ -220,7 +226,7 @@ export async function fetchGitHubFolder(url: string): Promise<GitHubFolderResult
   };
 
   try {
-    const { owner, repo } = parseGitHubUrl(url);
+    const { owner } = parseGitHubUrl(url);
     const apiUrl = convertGitHubUrlToApi(url);
     
     async function scanDirectory(currentApiUrl: string, currentPath: string = ''): Promise<void> {
@@ -230,7 +236,7 @@ export async function fetchGitHubFolder(url: string): Promise<GitHubFolderResult
         for (const item of contents) {
           if (item.type === 'file' && item.name.endsWith('.md')) {
             try {
-              const markdownFile = await fetchMarkdownContent(item.download_url, item.name);
+              const markdownFile = await fetchMarkdownContent(item.download_url!, item.name);
               if (markdownFile) {
                 markdownFile.author = owner;
                 result.markdownFiles.push(markdownFile);

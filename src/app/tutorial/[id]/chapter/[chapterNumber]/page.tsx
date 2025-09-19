@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -26,7 +26,6 @@ interface Tutorial {
 
 export default function ChapterPage() {
   const params = useParams();
-  const router = useRouter();
   const [tutorial, setTutorial] = useState<Tutorial | null>(null);
   const [currentChapter, setCurrentChapter] = useState<Chapter | null>(null);
   const [loading, setLoading] = useState(true);
@@ -57,7 +56,7 @@ export default function ChapterPage() {
         } else {
           setError(data.error || 'Failed to fetch tutorial');
         }
-      } catch (err) {
+      } catch {
         setError('Network error');
       } finally {
         setLoading(false);

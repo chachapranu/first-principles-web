@@ -31,7 +31,7 @@ export default function Home() {
         } else {
           setError(data.error || 'Failed to fetch tutorials');
         }
-      } catch (err) {
+      } catch {
         setError('Network error');
       } finally {
         setLoading(false);
@@ -83,7 +83,7 @@ export default function Home() {
           <>
             <div className="mb-8">
               <h2 className="text-2xl font-normal text-gray-900 mb-2">
-                What's New & What You Started
+                What&apos;s New & What You Started
               </h2>
               <p className="text-gray-600">
                 Fresh tutorials to explore and pick up where you left off

@@ -74,7 +74,7 @@ export default function AdminDashboard() {
         setMessage(data.error || 'Failed to add tutorial');
         setMessageType('error');
       }
-    } catch (error) {
+    } catch {
       setMessage('Network error occurred');
       setMessageType('error');
     } finally {
@@ -101,7 +101,7 @@ export default function AdminDashboard() {
         setMessage(data.error || 'Failed to delete tutorial');
         setMessageType('error');
       }
-    } catch (error) {
+    } catch {
       setMessage('Network error occurred');
       setMessageType('error');
     }
