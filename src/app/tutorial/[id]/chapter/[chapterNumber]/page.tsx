@@ -136,71 +136,123 @@ export default function ChapterPage() {
               remarkPlugins={[remarkGfm]}
               components={{
                 h1: ({ children }) => (
-                  <h1 className="text-3xl font-medium text-gray-900 mt-12 mb-6 leading-tight">
-                    {children}
+                  <h1 className="text-4xl font-bold text-gray-900 mt-16 mb-8 leading-tight border-b-2 border-amber-200 pb-4">
+                    <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                      {children}
+                    </span>
                   </h1>
                 ),
                 h2: ({ children }) => (
-                  <h2 className="text-2xl font-medium text-gray-900 mt-10 mb-5 leading-tight">
+                  <h2 className="text-3xl font-semibold text-gray-800 mt-12 mb-6 leading-tight relative">
+                    <span className="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b from-amber-400 to-amber-600 rounded-full"></span>
                     {children}
                   </h2>
                 ),
                 h3: ({ children }) => (
-                  <h3 className="text-xl font-medium text-gray-900 mt-8 mb-4 leading-tight">
+                  <h3 className="text-2xl font-medium text-gray-800 mt-10 mb-5 leading-tight flex items-center">
+                    <span className="w-2 h-2 bg-amber-500 rounded-full mr-3"></span>
                     {children}
                   </h3>
                 ),
+                h4: ({ children }) => (
+                  <h4 className="text-xl font-medium text-gray-700 mt-8 mb-4 leading-tight">
+                    {children}
+                  </h4>
+                ),
                 p: ({ children }) => (
-                  <p className="text-gray-700 leading-relaxed mb-6 text-lg">
+                  <p className="text-gray-700 leading-loose mb-6 text-lg tracking-wide">
                     {children}
                   </p>
                 ),
                 ul: ({ children }) => (
-                  <ul className="text-gray-700 leading-relaxed mb-6 text-lg space-y-2 pl-6">
+                  <ul className="text-gray-700 leading-loose mb-8 text-lg space-y-3 pl-8">
                     {children}
                   </ul>
                 ),
                 ol: ({ children }) => (
-                  <ol className="text-gray-700 leading-relaxed mb-6 text-lg space-y-2 pl-6">
+                  <ol className="text-gray-700 leading-loose mb-8 text-lg space-y-3 pl-8 list-decimal">
                     {children}
                   </ol>
                 ),
                 li: ({ children }) => (
-                  <li className="text-gray-700">
+                  <li className="text-gray-700 relative">
+                    <span className="absolute -left-6 top-3 w-2 h-2 bg-amber-400 rounded-full"></span>
                     {children}
                   </li>
                 ),
                 blockquote: ({ children }) => (
-                  <blockquote className="border-l-4 border-amber-400 bg-amber-50 pl-6 py-4 mb-6 italic text-gray-700">
-                    {children}
+                  <blockquote className="border-l-4 border-gradient-to-b from-amber-400 to-amber-600 bg-gradient-to-r from-amber-50 to-orange-50 pl-8 py-6 mb-8 italic text-gray-800 rounded-r-lg shadow-sm">
+                    <div className="flex items-start">
+                      <span className="text-amber-500 text-4xl mr-4 leading-none">&ldquo;</span>
+                      <div className="flex-1">{children}</div>
+                    </div>
                   </blockquote>
                 ),
                 code: ({ children, className }) => {
                   const isInline = !className || !className.includes('language-');
                   return isInline ? (
-                    <code className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-base font-mono">
+                    <code className="bg-amber-100 text-amber-900 px-3 py-1 rounded-md text-base font-mono font-medium border border-amber-200">
                       {children}
                     </code>
                   ) : (
-                    <code className="block bg-gray-900 text-gray-100 p-4 rounded-lg text-sm font-mono overflow-x-auto mb-6">
-                      {children}
-                    </code>
+                    <div className="mb-8">
+                      <pre className="bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100 p-6 rounded-xl text-sm font-mono overflow-x-auto shadow-lg border border-gray-700">
+                        <code className="block">{children}</code>
+                      </pre>
+                    </div>
                   );
                 },
                 pre: ({ children }) => (
-                  <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-sm font-mono overflow-x-auto mb-6">
-                    {children}
-                  </pre>
+                  <div className="mb-8">
+                    <pre className="bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100 p-6 rounded-xl text-sm font-mono overflow-x-auto shadow-lg border border-gray-700">
+                      {children}
+                    </pre>
+                  </div>
                 ),
                 a: ({ href, children }) => (
                   <a 
                     href={href} 
-                    className="text-amber-600 hover:text-amber-800 transition-colors underline"
+                    className="text-amber-600 hover:text-amber-800 transition-all duration-200 underline decoration-amber-300 decoration-2 underline-offset-2 hover:decoration-amber-500 font-medium"
                     target={href?.startsWith('http') ? '_blank' : undefined}
                     rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
                   >
                     {children}
                   </a>
+                ),
+                table: ({ children }) => (
+                  <div className="mb-8 overflow-x-auto">
+                    <table className="min-w-full border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                      {children}
+                    </table>
+                  </div>
+                ),
+                thead: ({ children }) => (
+                  <thead className="bg-gradient-to-r from-amber-50 to-orange-50">
+                    {children}
+                  </thead>
+                ),
+                th: ({ children }) => (
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800 border-b border-gray-200">
+                    {children}
+                  </th>
+                ),
+                td: ({ children }) => (
+                  <td className="px-6 py-4 text-sm text-gray-700 border-b border-gray-100">
+                    {children}
+                  </td>
+                ),
+                hr: () => (
+                  <hr className="my-12 border-0 h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
+                ),
+                strong: ({ children }) => (
+                  <strong className="font-bold text-gray-900 bg-amber-100 px-1 py-0.5 rounded">
+                    {children}
+                  </strong>
+                ),
+                em: ({ children }) => (
+                  <em className="italic text-amber-700 font-medium">
+                    {children}
+                  </em>
                 ),
               }}
             >
