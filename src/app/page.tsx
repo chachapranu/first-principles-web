@@ -27,12 +27,19 @@ export default function Home() {
         const data = await response.json();
         
         if (response.ok) {
-          setTutorials(data.tutorials);
+          setTutorials(data.tutorials || []);
+        } else if (response.status === 504 || response.status === 503) {
+          // Handle gateway timeout or service unavailable
+          console.log('Database temporarily unavailable, showing empty state');
+          setTutorials([]);
+          setError('Database temporarily unavailable. The site is loading content...');
         } else {
           setError(data.error || 'Failed to fetch tutorials');
         }
       } catch {
-        setError('Network error');
+        console.log('Network error, showing empty state');
+        setTutorials([]);
+        setError('Network error. Please check your connection.');
       } finally {
         setLoading(false);
       }
@@ -49,10 +56,34 @@ export default function Home() {
     );
   }
 
-  if (error) {
+  if (error && tutorials.length === 0) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-red-600">Error: {error}</div>
+      <div className="min-h-screen bg-white">
+        <header className="border-b border-gray-200 bg-white">
+          <div className="max-w-4xl mx-auto px-6 py-8">
+            <h1 className="text-4xl font-normal text-gray-900 text-center mb-4">
+              Learn from First Principles
+            </h1>
+            <p className="text-lg text-gray-600 text-center max-w-2xl mx-auto leading-relaxed">
+              Every complex topic has simple fundamentals. We break them down step-by-step, so you build 
+              real understanding instead of memorizing facts.
+            </p>
+          </div>
+        </header>
+        
+        <main className="max-w-4xl mx-auto px-6 py-12">
+          <div className="text-center py-16">
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-6">
+              <h2 className="text-xl font-medium text-amber-800 mb-2">Service Temporarily Unavailable</h2>
+              <p className="text-amber-700">
+                We&apos;re experiencing some technical difficulties. Please try refreshing the page in a few moments.
+              </p>
+            </div>
+            <p className="text-gray-600 text-sm">
+              Technical details: {error}
+            </p>
+          </div>
+        </main>
       </div>
     );
   }
